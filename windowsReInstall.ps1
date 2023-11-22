@@ -24,7 +24,7 @@ net start bits
 net start msiserver
 
 # Mount iso and run it in background
-Mount-DiskImage -ImagePath Join-Path -Path (Get-Location).path -ChildPath "\windows.iso"
+Mount-DiskImage -ImagePath (Join-Path -Path (Get-Location).path -ChildPath "\windows.iso")
 & D:\setup.exe /Auto Upgrade /eula accept /Quiet
 
 # Remove the registry values to unpause updates
