@@ -35,28 +35,24 @@ catch {
     Handle-Error
 }
 
-# Function to enumerate folder names
-function Enumerate-FolderName {
-    param (
+# Function to rename folders with a number if they already exist
+function Rename-WithNumberIfExists {
+    param(
         [string]$path
     )
 
-    $suffix = 0
-    $newPath = $path
-    while (Test-Path -Path $newPath) {
-        $suffix++
-        $newPath = "{0}{1}" -f $path, $suffix
+    $i = 1
+    while (Test-Path -Path "$path$i") {
+        $i++
     }
-    $newPath
+
+    Rename-Item -Path $path -NewName "$path$i" -Force
 }
 
 # Rename folders and start services
 try {
-    $softwareDistributionOld = Enumerate-FolderName "C:\Windows\SoftwareDistribution.old"
-    $catroot2Old = Enumerate-FolderName "C:\Windows\System32\catroot2.old"
-
-    Rename-Item -Path "C:\Windows\SoftwareDistribution" -NewName $softwareDistributionOld -Force
-    Rename-Item -Path "C:\Windows\System32\catroot2" -NewName $catroot2Old -Force
+    Rename-WithNumberIfExists "C:\Windows\SoftwareDistribution.old"
+    Rename-WithNumberIfExists "C:\Windows\System32\catroot2.old"
 
     Start-Service -Name wuauserv, cryptSvc, bits, msiserver
 }
